@@ -15,14 +15,16 @@
       <style type="text/css">
          body{min-height:100vh;background:#fff;font-family: Arial, sans-serif;margin: 0;padding: 0;}
          .fm-container,.fm-container-air{padding:0px 0px;border:1px solid #000;margin-bottom:10px;cursor:pointer}
-         .fm-container2{padding:0px;margin-bottom:10px}
-         .main-title{color:#FFA500}
-         .main-title2{color:#fff}
-         .lightmode{display:none;background:#fff;color:#000;width:35px;height:35px;line-height:32px;border-radius:50%;text-align:center;position:absolute;top:10px;right:10px;cursor:pointer}
-         .nightmode{background:#000;color:#fff;width:35px;height:35px;line-height:32px;border-radius:50%;text-align:center;position:absolute;top:10px;right:10px;cursor:pointer}
-         .fm-static-container{background:linear-gradient(to right, #232526, #414345);position:fixed;top:0px;width:100%;padding:10px 10px 10px 10px;z-index:9999;border-bottom:2px solid #d2d2d2}
+         .fm-container2{padding:0px;margin-bottom:0px}
+         .main-title{color:#FFA500; font-size: 24px; margin-bottom: 5px;}
+         .main-title2{color:#fff; font-size: 18px;}
+         .lightmode{display:none;background:#fff;color:#000;width:30px;height:30px;line-height:28px;border-radius:50%;text-align:center;position:absolute;top:10px;right:10px;cursor:pointer}
+         .nightmode{background:#000;color:#fff;width:30px;height:30px;line-height:28px;border-radius:50%;text-align:center;position:absolute;top:10px;right:10px;cursor:pointer}
+         /* Fixed height adjustment for top container */
+         .fm-static-container{background:linear-gradient(to right, #232526, #414345);position:fixed;top:0px;width:100%;padding:5px 10px 5px 10px;z-index:9999;border-bottom:2px solid #d2d2d2}
          .footer-static-container{background:linear-gradient(to right, #232526, #414345);position:fixed;bottom:0px;width:100%;padding:10px 10px 10px 10px;z-index:9999;border-top:2px solid #d2d2d2;text-align:center}
-         .mt-top{margin-top:115px}
+         /* Margin adjustment for body content */
+         .mt-top{margin-top:95px}
          footer{margin-bottom:60px;width:100%;height:50px;background:#000;text-align:center}
          footer p{color:#fff;line-height:50px}
          footer p a{color:orange!important}
@@ -62,7 +64,7 @@
          <div class="row">
             <div class="col-md-12">
                <div class="fm-container2 text-center" data-link="https://azuracast.vibesounds.in:8000/radio.mp3" data-title="Sahara FM">
-                  <h4 class="fm-name mb-2 main-title2" >Sahara FM</h4>
+                  <h4 class="fm-name mb-1 main-title2" >Sahara FM</h4>
                   <audio id="player" controls>
                      <source id="fm-url" src="https://azuracast.vibesounds.in:8000/radio.mp3" type="audio/mpeg">
                   </audio>
@@ -148,9 +150,9 @@
                <div class="fm-container text-center" data-link="https://a9oldhits-a9media.radioca.st/stream" data-title="Palaiya Padal FM">
                   <img src="Images/A9 Radio oldhits.jpg">
                   <p class="mb-3 mt-2">Palaiya Padal FM</p>
-               </div>
+             </div>
             </div>
-            <div class="col-md-2 col-4">
+             <div class="col-md-2 col-4">
                <div class="fm-container text-center" data-link="https://radio.lotustechnologieslk.net:8006/;stream.mp3" data-title="Suryan FM">
                   <img src="Images/sooriyanfm.jpeg">
                   <p class="mb-3 mt-2">Suryan FM</p>
@@ -279,7 +281,6 @@
             </div>
          </div>
       </div>
-
       <footer>
          <p style="text-align: center;">
             MORE TAMIL RADIOS <a href="market://details?id=tamilvm.fm" target="_blank">DOWNLOAD ANDROID APP</a>
@@ -295,11 +296,8 @@
 
          function showLoading() {
             $('.loading').show();
-            // Safety timeout: Hide loading after 10 seconds if nothing happens
             clearTimeout(loadTimer);
-            loadTimer = setTimeout(function(){
-               $('.loading').hide();
-            }, 10000);
+            loadTimer = setTimeout(function(){ $('.loading').hide(); }, 10000);
          }
 
          function handleStreamError() {
@@ -307,19 +305,14 @@
             alert("Stream is down, please play another channel.");
          }
 
-         // Monitor Audio Errors
          audio.onerror = function() { handleStreamError(); };
-         
-         // Monitor Video Errors (AIR Channels)
          videoPlayer.on('error', function() { handleStreamError(); });
 
          $('.fm-container-air').click(function(){
             audio.pause();
             type="video";
-            $('.play-div').hide();
-            $('.pause-div').show();
-            $('.unmute-div').hide();
-            $('.mute-div').show();
+            $('.play-div').hide(); $('.pause-div').show();
+            $('.unmute-div').hide(); $('.mute-div').show();
             showLoading();
             
             var title=$(this).attr('data-title');
@@ -331,18 +324,14 @@
             videoPlayer.play();
          });
 
-         videoPlayer.on('playing', function() {
-            $('.loading').hide();
-         });
+         videoPlayer.on('playing', function() { $('.loading').hide(); });
 
          $('.fm-container').click(function(){
             videoPlayer.pause();
             type="audio";
-            $('.play-div').hide();
-            $('.pause-div').show();
+            $('.play-div').hide(); $('.pause-div').show();
             $("#player").prop('muted',false);
-            $('.unmute-div').hide();
-            $('.mute-div').show();
+            $('.unmute-div').hide(); $('.mute-div').show();
             showLoading();
 
             var title=$(this).attr('data-title');
@@ -352,41 +341,31 @@
             $("#fm-url").attr("src",link);
             audio.pause();
             audio.load();
-            audio.oncanplaythrough = function() {
-               audio.play();
-            };
+            audio.oncanplaythrough = function() { audio.play(); };
          });
 
-         $("#player").bind('playing',function(){
-            $('.loading').hide();
-         });
+         $("#player").bind('playing',function(){ $('.loading').hide(); });
 
-         // Controls logic
          $('.pause').click(function(){
-            if(type=="audio"){ audio.pause(); } 
-            else { videoPlayer.pause(); } 
+            if(type=="audio"){ audio.pause(); } else { videoPlayer.pause(); } 
             $('.pause-div').hide(); $('.play-div').show();
          });
 
          $('.play').click(function(){
-            if(type=="audio"){ audio.play(); } 
-            else { videoPlayer.play(); } 
+            if(type=="audio"){ audio.play(); } else { videoPlayer.play(); } 
             $('.play-div').hide(); $('.pause-div').show();
          });
 
          $('.mute').click(function(){
-            if(type=="audio"){$("#player").prop('muted',true);} 
-            else{videoPlayer.muted(true);} 
+            if(type=="audio"){$("#player").prop('muted',true);} else{videoPlayer.muted(true);} 
             $('.mute-div').hide(); $('.unmute-div').show();
          });
 
          $('.unmute').click(function(){
-            if(type=="audio"){$("#player").prop('muted',false);} 
-            else{videoPlayer.muted(false);} 
+            if(type=="audio"){$("#player").prop('muted',false);} else{videoPlayer.muted(false);} 
             $('.unmute-div').hide(); $('.mute-div').show();
          });
 
-         // Theme logic
          $('.nightmode').click(function(){
             $('h6,h5,h4,h3,h2,h1,p').css({'color':'#fff'});
             $('i').css({'color':'#000'});
@@ -405,10 +384,7 @@
             $('.main-title2').css({'color':'#ffffff'});
          });
 
-         // Popup Auto-hide after 10 seconds
-         setTimeout(function () {
-            document.getElementById('popup').style.display = 'none';
-         }, 10000);
+         setTimeout(function () { document.getElementById('popup').style.display = 'none'; }, 10000);
       });
       </script> 
    </body>
