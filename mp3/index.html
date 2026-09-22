@@ -1,1 +1,206 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Tamil VM FM - Live Stream</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    .player {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    #songName {
+      font-size: 18px;
+      margin-bottom: 25px;
+      opacity: 0.8;
+    }
+
+    audio {
+      width: 90%;
+      max-width: 600px;
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="player">
+
+  <h1>🎵 TAMIL VM FM</h1>
+
+  <div id="songName">Loading...</div>
+
+  <audio id="audioPlayer" controls preload="auto"></audio>
+
+  <div class="status" id="status">
+    Connecting...
+  </div>
+
+</div>
+
+
+<script>
+
+  // ==========================================
+  // TAMIL VM FM PLAYLIST
+  // ==========================================
+
+  const playlist = [
+
+    "https://vmfm.github.io/tamil/mp3/Ennaal%20Mudiyathu%20Summaa%20Iruppathu.mp3",
+
+    "https://vmfm.github.io/tamil/mp3/Ennaal%20Mudiyathu%20Summaa%20Iruppathu.mp3",
+
+    "https://vmfm.github.io/tamil/mp3/Ennaal%20Mudiyathu%20Summaa%20Iruppathu.mp3",
+
+    "https://vmfm.github.io/tamil/mp3/Ennaal%20Mudiyathu%20Summaa%20Iruppathu.mp3"
+
+  ];
+
+
+  let currentSong = 0;
+
+  const player = document.getElementById("audioPlayer");
+  const songName = document.getElementById("songName");
+  const status = document.getElementById("status");
+
+
+  // ==========================================
+  // LOAD SONG
+  // ==========================================
+
+  function loadSong(index, autoplay = false) {
+
+    if (index >= playlist.length) {
+      index = 0;
+    }
+
+    currentSong = index;
+
+    player.src = playlist[currentSong];
+
+    songName.innerHTML =
+      "Playing " + (currentSong + 1) +
+      " / " + playlist.length;
+
+    status.innerHTML = "🎵 Ready";
+
+    if (autoplay) {
+      player.play().catch(function(error) {
+
+        // Browser autoplay policy may block sound
+        status.innerHTML =
+          "▶️ Tap Play to start the radio";
+
+      });
+    }
+  }
+
+
+  // ==========================================
+  // NEXT SONG AUTOMATICALLY
+  // ==========================================
+
+  player.addEventListener("ended", function() {
+
+    currentSong++;
+
+    if (currentSong >= playlist.length) {
+      currentSong = 0;
+    }
+
+    loadSong(currentSong, true);
+
+  });
+
+
+  // ==========================================
+  // ERROR HANDLING
+  // ==========================================
+
+  player.addEventListener("error", function() {
+
+    status.innerHTML =
+      "⚠️ Unable to load song. Trying next...";
+
+    setTimeout(function() {
+
+      currentSong++;
+
+      if (currentSong >= playlist.length) {
+        currentSong = 0;
+      }
+
+      loadSong(currentSong, true);
+
+    }, 3000);
+
+  });
+
+
+  // ==========================================
+  // PLAY EVENT
+  // ==========================================
+
+  player.addEventListener("play", function() {
+
+    status.innerHTML = "🔴 LIVE • Playing";
+
+  });
+
+
+  // ==========================================
+  // PAUSE EVENT
+  // ==========================================
+
+  player.addEventListener("pause", function() {
+
+    if (!player.ended) {
+      status.innerHTML = "⏸ Paused";
+    }
+
+  });
+
+
+  // ==========================================
+  // START
+  // ==========================================
+
+  loadSong(0, false);
+
+</script>
+
+</body>
+</html>
+```
 
