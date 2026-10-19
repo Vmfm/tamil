@@ -1,206 +1,435 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <head>
+      <title>:: TAMIL VM FM ::</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> 
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
+      <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+      <script src="https://unpkg.com/video.js/dist/video.js"></script> 
+      <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script> 
+      <style type="text/css">
+         body { min-height: 100vh; background: #fff; color: #000; font-family: Arial, sans-serif; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
+         .fm-container, .fm-container-air { padding: 0px; border: 1px solid #000; margin-bottom: 10px; cursor: pointer; background: #fff; transition: background 0.3s, border 0.3s; }
+         .fm-container2 { padding: 0px; margin-bottom: 0px; }
+         .main-title { color: #FFA500; font-size: 24px; margin-bottom: 5px; }
+         .main-title2 { color: #fff; font-size: 18px; }
+         .lightmode { display: none; background: #fff; color: #000; width: 30px; height: 30px; line-height: 28px; border-radius: 50%; text-align: center; position: absolute; top: 10px; right: 10px; cursor: pointer; z-index: 10000; }
+         .nightmode { background: #000; color: #fff; width: 30px; height: 30px; line-height: 28px; border-radius: 50%; text-align: center; position: absolute; top: 10px; right: 10px; cursor: pointer; z-index: 10000; }
+         .fm-static-container { background: linear-gradient(to right, #232526, #414345); position: fixed; top: 0px; width: 100%; padding: 5px 10px; z-index: 9999; border-bottom: 2px solid #d2d2d2; }
+         .footer-static-container { background: linear-gradient(to right, #232526, #414345); position: fixed; bottom: 0px; width: 100%; padding: 10px; z-index: 9999; border-top: 2px solid #d2d2d2; text-align: center; }
+         .mt-top { margin-top: 95px; }
+         footer { margin-bottom: 60px; width: 100%; height: 50px; background: #000; text-align: center; }
+         footer p { color: #fff; line-height: 50px; margin: 0; }
+         footer p a { color: orange !important; }
+         .fm-container img, .fm-container-air img { width: 100%; height: auto; }
+         .fm-container p, .fm-container-air p { font-size: 12px; color: inherit; }
+         .sub-title { text-align: center; margin: 20px 0px; color: inherit; }
+         .col-4 { padding-right: 7px !important; padding-left: 7px !important; }
+         .pause-div, .unmute-div { display: none; }
+         audio { height: 0px; display: none; }
+         .btn { border-radius: 21px; width: 100px; }
+         .loading { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: #ffffffcc; z-index: 99999; height: 100vh; display: none; }
+         .loader { width: 250px; height: auto; display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+         .video-js .vjs-tech { height: 20px; } .video-js { display: none; }
+         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+         .popup-box { position: relative; background: #fff; padding: 30px 20px 20px; border-radius: 12px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); }
+         .popup-box h2 { font-size: 18px; margin-bottom: 20px; color: #333; }
+         .popup-box a.download-btn { display: inline-block; margin-top: 10px; padding: 12px 20px; background: #1b9cfc; color: white; border-radius: 8px; text-decoration: none; font-weight: bold; }
+         .popup-box .close-btn { position: absolute; top: 10px; right: 15px; font-size: 22px; color: #888; cursor: pointer; font-weight: bold; }
+         
+         /* Dark Theme Classes */
+         body.dark-theme { background: #121212 !important; color: #e0e0e0 !important; }
+         body.dark-theme .fm-container, body.dark-theme .fm-container-air { background: #1e1e1e !important; border: 1px solid #444 !important; color: #fff !important; }
+         body.dark-theme .sub-title { color: #ffa500 !important; }
+      </style>
+   </head>
+   <body>
+      <div class="loading"><img class="loader" src="https://i.pinimg.com/originals/48/6a/a0/486aa0fa1658b7522ecd8918908ece40.gif" /></div>
 
-  <title>Tamil VM FM - Live Stream</title>
+      <div class="popup-overlay" id="popup">
+         <div class="popup-box">
+            <span class="close-btn" onclick="document.getElementById('popup').style.display='none'">×</span>
+            <h2>Download our Android application from Play Store<br>Get better experience with 400+ radios!</h2>
+            <a class="download-btn" href="market://details?id=tamilvm.fm" target="_blank">Download from Play Store</a>
+         </div>
+      </div>
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
+      <div class="fm-static-container">
+         <h2 class="text-center main-title">TAMIL VM FM</h2>
+         <p class="nightmode text-center"><i class="fa fa-moon-o"></i></p>
+         <p class="lightmode text-center"><i class="fa fa-sun-o"></i></p>
+         <div class="row">
+            <div class="col-md-12">
+               <div class="fm-container2 text-center" data-link="https://azuracast.vibesounds.in:8000/radio.mp3" data-title="Sahara FM">
+                  <h4 class="fm-name mb-1 main-title2">Sahara FM</h4>
+                  <audio id="player" controls>
+                     <source id="fm-url" src="https://azuracast.vibesounds.in:8000/radio.mp3" type="audio/mpeg">
+                  </audio>
+                  <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls preload="auto" data-setup='{}'>
+                     <source src="https://air.pc.cdn.bitgravity.com/air/live/pbaudio050/playlist.m3u8" type="application/x-mpegURL">
+                  </video>
+               </div>
+            </div>
+         </div>
+      </div>
 
-    .player {
-      width: 100%;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
+      <div class="footer-static-container">
+         <div class="row">
+            <div class="col-6 pause-div"><button class="btn btn-secondary pause">Pause</button></div>
+            <div class="col-6 play-div"><button class="btn btn-secondary play">Play</button></div>
+            <div class="col-6 mute-div"><button class="btn btn-warning mute">Mute</button></div>
+            <div class="col-6 unmute-div"><button class="btn btn-warning unmute">Unmute</button></div>
+         </div>
+      </div>
 
-    h1 {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
+      <div class="container mt-top">
+         <h4 class="sub-title">All India Radio</h4>
+         <div class="row">
+            <div class="col-md-2 col-4">
+               <div class="fm-container-air text-center" data-link="https://air.pc.cdn.bitgravity.com/air/live/pbaudio050/playlist.m3u8" data-title="AIR Karaikal">
+                  <img src="Images/airkaaraikalfm1.jpg" alt="AIR Karaikal">
+                  <p class="mb-3 mt-2">AIR Karaikal</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container-air text-center" data-link="https://air.pc.cdn.bitgravity.com/air/live/pbaudio051/playlist.m3u8" data-title="AIR Kodaikanal">
+                  <img src="Images/airKodaikanalfm.jpg" alt="AIR Kodaikanal">
+                  <p class="mb-3 mt-2">AIR Kodaikanal</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container-air text-center" data-link="https://air.pc.cdn.bitgravity.com/air/live/pbaudio017/playlist.m3u8" data-title="AIR Coimbtore">
+                  <img src="Images/aircoimbaturefm.jpg" alt="AIR Coimbtore">
+                  <p class="mb-3 mt-2">AIR Coimbtore</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container-air text-center" data-link="https://air.pc.cdn.bitgravity.com/air/live/pbaudio041/chunklist.m3u8" data-title="AIR Trichy">
+                  <img src="Images/airtrichyfm.jpg" alt="AIR Trichy">
+                  <p class="mb-3 mt-2">AIR Trichy</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container-air text-center" data-link="https://air.pc.cdn.bitgravity.com/air/live/pbaudio022/playlist.m3u8" data-title="AIR Chennai">
+                  <img src="Images/airchennaifm.jpg" alt="AIR Chennai">
+                  <p class="mb-3 mt-2">AIR Chennai</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container-air text-center" data-link="https://air.pc.cdn.bitgravity.com/air/live/pbaudio025/playlist.m3u8" data-title="AIR Tamil">
+                  <img src="Images/airtamilnadufm.jpg" alt="AIR Tamil">
+                  <p class="mb-3 mt-2">AIR Tamil</p>
+               </div>
+            </div>
+         </div>
 
-    #songName {
-      font-size: 18px;
-      margin-bottom: 25px;
-      opacity: 0.8;
-    }
+         <h4 class="sub-title">FM Channel</h4>
+         <div class="row">
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://c2.radioboss.fm:9099/stream" data-title="RADIO RAAGAM">
+                  <img src="Images/radioraagamfm.jpg" alt="RADIO RAAGAM">
+                  <p class="mb-3 mt-2">RADIO RAAGAM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://kummalam.stream.laut.fm/kummalam" data-title="kummalam FM">
+                  <img src="Images/kummalamradio1.png" alt="kummalam FM">
+                  <p class="mb-3 mt-2">kummalam FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://cp1.hostcrate.com/8910/stream" data-title="isaiaruvi fm">
+                  <img src="Images/isaiaruvifm.jpg" alt="isaiaruvi fm">
+                  <p class="mb-3 mt-2">isaiaruvi fm</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://a9oldhits-a9media.radioca.st/stream" data-title="Palaiya Padal FM">
+                  <img src="Images/A9 Radio oldhits.jpg" alt="Palaiya Padal FM">
+                  <p class="mb-3 mt-2">Palaiya Padal FM</p>
+               </div>
+            </div>
+             <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://radio.lotustechnologieslk.net:8006/;stream.mp3" data-title="Suryan FM">
+                  <img src="Images/sooriyanfm.jpeg" alt="Suryan FM">
+                  <p class="mb-3 mt-2">Suryan FM</p>
+               </div>
+            </div>
+              <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://cast6.asurahosting.com/proxy/rjtamil/live" data-title="RJ TAMIL FM">
+                  <img src="Images/rjtamil-pudugai.jpg" alt="RJ TAMIL FM">
+                  <p class="mb-3 mt-2">RJ TAMIL FM</p>
+               </div>
+            </div>
+              <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://server1.mahamediacast.com/proxy/iniyafm/stream" data-title="Tiruthani City Fm">
+                  <img src="Images/thiruthanicityfm.jpg" alt="Tiruthani City Fm">
+                  <p class="mb-3 mt-2">Tiruthani City Fm</p>
+               </div>
+            </div>
+               <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://server1.mahamediacast.com/proxy/kodaisaralfm/stream" data-title="Kodai Saral FM">
+                  <img src="Images/Kodaisaral Fm.jpg" alt="Kodai Saral FM">
+                  <p class="mb-3 mt-2">Kodai Saral FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://worldradio.online/proxy/?q=http://220.247.227.20:8000/Threndralstream" data-title="Thenral Radio">
+                  <img src="Images/thendralfm.jpeg" alt="Thenral Radio">
+                  <p class="mb-3 mt-2">Thenral Radio</p>
+               </div>
+            </div>
+         </div>
+         
+         <h4 class="sub-title">Artist</h4>
+         <div class="row">
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://psrlive1.listenon.in/anirud" data-title="Aniruth FM">
+                  <img src="Images/aniruthhits.png" alt="Aniruth FM">
+                  <p class="mb-3 mt-2">Aniruth FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://stream.zeno.fm/u0ze9rfzyp8uv" data-title="SPB FM">
+                  <img src="Images/spbfm-1.jpg" alt="SPB FM">
+                  <p class="mb-3 mt-2">SPB FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://psrlive1.listenon.in/ysr?station=ysrradio" data-title="Yuvan FM">
+                  <img src="Images/youvanhits.png" alt="Yuvan FM">
+                  <p class="mb-3 mt-2">Yuvan FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="http://stream.zeno.fm/ihpr0rqzoxquv" data-title="AR Rahman FM">
+                  <img src="Images/arrahumanhits.png" alt="AR Rahman FM">
+                  <p class="mb-3 mt-2">AR Rahman FM</p>
+               </div>
+            </div>
+             <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="http://stream.zeno.fm/qfd4vokvu3dvv" data-title="ILAYARAJA FM">
+                  <img src="Images/ilayarajafm__1.png" alt="Ilayaraja FM">
+                  <p class="mb-3 mt-2">Ilayaraja FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://stream.zeno.fm/aad4e51qz7zuv" data-title="KS Chitra">
+                  <img src="Images/chitrahits.png" alt="KS Chitra">
+                  <p class="mb-3 mt-2">KS Chitra</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://stream.zeno.fm/6apkrxlnxudtv" data-title="Imman Radio">
+                  <img src="https://manixdin.github.io/mrxdinfm/img/artist/imman.jpg" alt="Imman Radio">
+                  <p class="mb-3 mt-2">Imman Radio</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://stream.zeno.fm/maokuvdskhnuv" data-title="Mano Radio">
+                  <img src="https://manixdin.github.io/mrxdinfm/img/artist/Mano.jpg" alt="Mano Radio">
+                  <p class="mb-3 mt-2">Mano Radio</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://stream.zeno.fm/v4ghrktawp8uv" data-title="GV Prakash Radio">
+                  <img src="https://manixdin.github.io/mrxdinfm/img/artist/gvprakash.jpg" alt="GV Prakash Radio">
+                  <p class="mb-3 mt-2">GV Prakash Radio</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://stream.zeno.fm/g20bs7hu0uhvv" data-title="Hariharan Radio">
+                  <img src="Images/hariharanhits.png" alt="Hariharan Radio">
+                  <p class="mb-3 mt-2">Hariharan Radio</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://psrlive1.listenon.in/unni?station=unnikrishanradio" data-title="Unnikrishnan Radio">
+                  <img src="Images/unnikirusnanhits.png" alt="Unnikrishnan Radio">
+                  <p class="mb-3 mt-2">Unnikrishnan Radio</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="http://stream.zeno.fm/x7wc1xgllvsvv" data-title="Mellisai Mannar Radio">
+                  <img src="Images/msvhits.png" alt="Mellisai Mannar">
+                  <p class="mb-3 mt-2">Mellisai Mannar</p>
+               </div>
+            </div>
+         </div>
 
-    audio {
-      width: 90%;
-      max-width: 600px;
-    }
+         <h4 class="sub-title">God</h4>
+         <div class="row">
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://bakthiisai-unicast2u.radioca.st/stream" data-title="Bakthi FM">
+                  <img src="Images/bakthifm4.jpeg" alt="Bakthi FM">
+                  <p class="mb-3 mt-2">Bakthi FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://playerservices.streamtheworld.com/api/livestream-redirect/OMRADIO_S01AAC_SC" data-title="OM FM">
+                  <img src="Images/omfm3.png" alt="OM FM">
+                  <p class="mb-3 mt-2">OM FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="http://69.197.169.178:28232/;stream.mp3" data-title="Ayyappa Tamil FM">
+                  <img src="Images/ayappanfm4.png" alt="Ayyappa Tamil FM">
+                  <p class="mb-3 mt-2">Ayyappa Tamil FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://cast6.asurahosting.com/proxy/saranamayyappa/stream" data-title="Saranam Ayyappa">
+                  <img src="Images/ayyappan.jpg" alt="Saranam Ayyappa">
+                  <p class="mb-3 mt-2">Saranam Ayyappa</p>
+               </div>
+            </div>
+             <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://cast6.asurahosting.com/proxy/aadhisivam/stream" data-title="Aadhi Sivam FM">
+                  <img src="Images/aadhishivam.jpg" alt="Aadhi Sivam FM">
+                  <p class="mb-3 mt-2">Aadhi Sivam FM</p>
+               </div>
+            </div>
+              <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://stream.zeno.fm/tzt8dd56kuhvv" data-title="Perumal FM">
+                  <img src="Images/vishnu-fm.jpg" alt="Perumal FM">
+                  <p class="mb-3 mt-2">Perumal FM</p>
+               </div>
+            </div>
+              <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://cast6.asurahosting.com/proxy/ssdevotional/stream" data-title="SS Devotional Radio">
+                  <img src="Images/ss-devosinol.jpg" alt="SS Devotional Radio">
+                  <p class="mb-3 mt-2">SS Devotional Radio</p>
+               </div>
+            </div>
+           <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="http://stream.zeno.fm/0r7u1fcn8mruv" data-title="Murugan FM">
+                  <img src="Images/muruganfm.jpg" alt="Murugan FM">
+                  <p class="mb-3 mt-2">Murugan FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="https://usa8.fastcast4u.com/proxy/isaimurasufm?mp=/1" data-title="hanifa FM">
+                  <img src="Images/hanifafm.jpg" alt="hanifa FM">
+                  <p class="mb-3 mt-2">hanifa FM</p>
+               </div>
+            </div>
+            <div class="col-md-2 col-4">
+               <div class="fm-container text-center" data-link="http://stream.zeno.fm/6fhdur9wn0hvv" data-title="TNTG FM">
+                  <img src="Images/tntgfm-2.jpg" alt="TNTG FM">
+                  <p class="mb-3 mt-2">TNTG FM</p>
+               </div>
+            </div>
+         </div>
+      </div>
+      <footer>
+         <p style="text-align: center;">
+            MORE TAMIL RADIOS <a href="market://details?id=tamilvm.fm" target="_blank">DOWNLOAD ANDROID APP</a>
+         </p>
+      </footer>
 
-    .status {
-      margin-top: 20px;
-      font-size: 14px;
-      opacity: 0.7;
-    }
-  </style>
-</head>
+      <script type="text/javascript">
+      $(document).ready(function(){
+         var type = "audio";
+         var audio = $("#player")[0];
+         var videoPlayer = videojs('my_video_1');
+         var loadTimer;
 
-<body>
+         function showLoading() {
+            $('.loading').show();
+            clearTimeout(loadTimer);
+            loadTimer = setTimeout(function(){ $('.loading').hide(); }, 10000);
+         }
 
-<div class="player">
+         function handleStreamError() {
+            $('.loading').hide();
+            alert("Stream is down, please play another channel.");
+         }
 
-  <h1>🎵 TAMIL VM FM</h1>
+         audio.onerror = function() { handleStreamError(); };
+         videoPlayer.on('error', function() { handleStreamError(); });
 
-  <div id="songName">Loading...</div>
+         // AIR Channels (Video/HLS Streams)
+         $('.fm-container-air').click(function(){
+            audio.pause();
+            type = "video";
+            $('.play-div').hide(); $('.pause-div').show();
+            $('.unmute-div').hide(); $('.mute-div').show();
+            showLoading();
+            
+            var title = $(this).attr('data-title');
+            var link = $(this).attr('data-link');
+            $('.fm-name').text(title);
+            
+            videoPlayer.src({"src": link, "type": 'application/x-mpegurl'});
+            videoPlayer.load();
+            videoPlayer.play();
+         });
 
-  <audio id="audioPlayer" controls preload="auto"></audio>
+         videoPlayer.on('playing', function() { $('.loading').hide(); });
 
-  <div class="status" id="status">
-    Connecting...
-  </div>
+         // Standard Audio FM Channels
+         $('.fm-container').click(function(){
+            videoPlayer.pause();
+            type = "audio";
+            $('.play-div').hide(); $('.pause-div').show();
+            $("#player").prop('muted', false);
+            $('.unmute-div').hide(); $('.mute-div').show();
+            showLoading();
 
-</div>
+            var title = $(this).attr('data-title');
+            var link = $(this).attr('data-link');
+            $('.fm-name').text(title);
+            
+            $("#fm-url").attr("src", link);
+            audio.pause();
+            audio.load();
+            audio.play().catch(function(e) {
+               console.log("Playback error: ", e);
+            });
+         });
 
+         $("#player").bind('playing', function(){ $('.loading').hide(); });
 
-<script>
+         $('.pause').click(function(){
+            if(type == "audio"){ audio.pause(); } else { videoPlayer.pause(); } 
+            $('.pause-div').hide(); $('.play-div').show();
+         });
 
-  // ==========================================
-  // TAMIL VM FM PLAYLIST
-  // ==========================================
+         $('.play').click(function(){
+            if(type == "audio"){ audio.play(); } else { videoPlayer.play(); } 
+            $('.play-div').hide(); $('.pause-div').show();
+         });
 
-  const playlist = [
+         $('.mute').click(function(){
+            if(type == "audio"){ $("#player").prop('muted', true); } else { videoPlayer.muted(true); } 
+            $('.mute-div').hide(); $('.unmute-div').show();
+         });
 
-    "https://vmfm.github.io/tamil/mp3/Ennaal%20Mudiyathu%20Summaa%20Iruppathu.mp3",
+         $('.unmute').click(function(){
+            if(type == "audio"){ $("#player").prop('muted', false); } else { videoPlayer.muted(false); } 
+            $('.unmute-div').hide(); $('.mute-div').show();
+         });
 
-    "https://vmfm.github.io/tamil/mp3/Ennaal%20Mudiyathu%20Summaa%20Iruppathu.mp3",
+         // Night Mode Toggle Fix
+         $('.nightmode').click(function(){
+            $('body').addClass('dark-theme');
+            $('.lightmode').show(); 
+            $('.nightmode').hide();
+         });
 
-    "https://vmfm.github.io/tamil/mp3/Ennaal%20Mudiyathu%20Summaa%20Iruppathu.mp3",
+         $('.lightmode').click(function(){
+            $('body').removeClass('dark-theme');
+            $('.lightmode').hide(); 
+            $('.nightmode').show();
+         });
 
-    "https://vmfm.github.io/tamil/mp3/Ennaal%20Mudiyathu%20Summaa%20Iruppathu.mp3"
-
-  ];
-
-
-  let currentSong = 0;
-
-  const player = document.getElementById("audioPlayer");
-  const songName = document.getElementById("songName");
-  const status = document.getElementById("status");
-
-
-  // ==========================================
-  // LOAD SONG
-  // ==========================================
-
-  function loadSong(index, autoplay = false) {
-
-    if (index >= playlist.length) {
-      index = 0;
-    }
-
-    currentSong = index;
-
-    player.src = playlist[currentSong];
-
-    songName.innerHTML =
-      "Playing " + (currentSong + 1) +
-      " / " + playlist.length;
-
-    status.innerHTML = "🎵 Ready";
-
-    if (autoplay) {
-      player.play().catch(function(error) {
-
-        // Browser autoplay policy may block sound
-        status.innerHTML =
-          "▶️ Tap Play to start the radio";
-
+         setTimeout(function () { document.getElementById('popup').style.display = 'none'; }, 10000);
       });
-    }
-  }
-
-
-  // ==========================================
-  // NEXT SONG AUTOMATICALLY
-  // ==========================================
-
-  player.addEventListener("ended", function() {
-
-    currentSong++;
-
-    if (currentSong >= playlist.length) {
-      currentSong = 0;
-    }
-
-    loadSong(currentSong, true);
-
-  });
-
-
-  // ==========================================
-  // ERROR HANDLING
-  // ==========================================
-
-  player.addEventListener("error", function() {
-
-    status.innerHTML =
-      "⚠️ Unable to load song. Trying next...";
-
-    setTimeout(function() {
-
-      currentSong++;
-
-      if (currentSong >= playlist.length) {
-        currentSong = 0;
-      }
-
-      loadSong(currentSong, true);
-
-    }, 3000);
-
-  });
-
-
-  // ==========================================
-  // PLAY EVENT
-  // ==========================================
-
-  player.addEventListener("play", function() {
-
-    status.innerHTML = "🔴 LIVE • Playing";
-
-  });
-
-
-  // ==========================================
-  // PAUSE EVENT
-  // ==========================================
-
-  player.addEventListener("pause", function() {
-
-    if (!player.ended) {
-      status.innerHTML = "⏸ Paused";
-    }
-
-  });
-
-
-  // ==========================================
-  // START
-  // ==========================================
-
-  loadSong(0, false);
-
-</script>
-
-</body>
+      </script>
+   </body>
 </html>
-```
-
