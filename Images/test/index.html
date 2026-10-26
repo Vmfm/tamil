@@ -40,33 +40,12 @@
             border-radius: 6px;
             overflow: hidden;
             background-color: transparent;
-            transition: transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.2s ease, border-color 0.3s ease;
          }
          .fm-container:hover, .fm-container-air:hover {
             transform: scale(1.03);
          }
          .fm-container2 { padding: 0px; margin-bottom: 0px; }
-         
-         /* Active Channel Snow Light / Glowing Effect */
-         @keyframes snowLightGlow {
-            0% {
-               box-shadow: 0 0 10px #ffffff, 0 0 20px #e0f7fa, inset 0 0 10px #ffffff;
-               border-color: #ffffff !important;
-            }
-            50% {
-               box-shadow: 0 0 20px #ffffff, 0 0 35px #b2ebf2, inset 0 0 15px #ffffff;
-               border-color: #e0f7fa !important;
-            }
-            100% {
-               box-shadow: 0 0 10px #ffffff, 0 0 20px #e0f7fa, inset 0 0 10px #ffffff;
-               border-color: #ffffff !important;
-            }
-         }
-
-         .playing-light-effect {
-            animation: snowLightGlow 1.8s infinite ease-in-out !important;
-            transform: scale(1.04) !important;
-         }
          
          /* Titles */
          .main-title { color: #FFA500; font-size: 24px; margin-bottom: 5px; font-weight: bold; }
@@ -140,8 +119,33 @@
             z-index: 9999;
             border-top: 2px solid #d2d2d2;
             text-align: center;
+            transition: all 0.5s ease;
          }
          
+         /* Lighting Effect for Bottom Player Bar */
+         .footer-static-container.playing-lighting {
+            background: linear-gradient(-45deg, #ff0055, #7a00ff, #00d4ff, #00ff66);
+            background-size: 400% 400%;
+            animation: playerGlowGradient 4s ease infinite;
+            box-shadow: 0 -5px 25px rgba(0, 212, 255, 0.8), 0 0 15px rgba(255, 0, 85, 0.6);
+            border-top: 2px solid #00ffff;
+         }
+
+         @keyframes playerGlowGradient {
+            0% {
+               background-position: 0% 50%;
+               box-shadow: 0 -5px 20px rgba(255, 0, 85, 0.8), 0 0 10px rgba(0, 212, 255, 0.5);
+            }
+            50% {
+               background-position: 100% 50%;
+               box-shadow: 0 -5px 25px rgba(0, 255, 102, 0.8), 0 0 15px rgba(122, 0, 255, 0.6);
+            }
+            100% {
+               background-position: 0% 50%;
+               box-shadow: 0 -5px 20px rgba(255, 0, 85, 0.8), 0 0 10px rgba(0, 212, 255, 0.5);
+            }
+         }
+
          /* Spacing */
          .mt-top { margin-top: 105px; }
          footer { margin-bottom: 60px; width: 100%; height: 50px; background: #000; text-align: center; }
@@ -159,12 +163,6 @@
          audio { height: 0px; display: none; }
          .btn { border-radius: 21px; width: 100px; font-weight: bold; }
          
-         /* Center controls alignment */
-         .footer-static-container .row {
-            justify-content: center;
-            align-items: center;
-         }
-
          /* Loading screen */
          .loading { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,0.6); z-index: 99999; height: 100vh; display: none; }
          .loader { width: 180px; height: auto; display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
@@ -218,13 +216,13 @@
          </div>
       </div>
 
-      <!-- Fixed Bottom Footer Player Controls (Centered) -->
+      <!-- Fixed Bottom Footer Player Controls -->
       <div class="footer-static-container">
-         <div class="row justify-content-center text-center">
-            <div class="col-auto pause-div"> <button class="btn btn-secondary pause"><i class="fa fa-pause"></i> Pause</button></div>
-            <div class="col-auto play-div"> <button class="btn btn-success play"><i class="fa fa-play"></i> Play</button></div>
-            <div class="col-auto mute-div"> <button class="btn btn-warning mute"><i class="fa fa-volume-off"></i> Mute</button></div>
-            <div class="col-auto unmute-div"> <button class="btn btn-warning unmute"><i class="fa fa-volume-up"></i> Unmute</button></div>
+         <div class="row">
+            <div class="col-6 pause-div"> <button class="btn btn-secondary pause"><i class="fa fa-pause"></i> Pause</button></div>
+            <div class="col-6 play-div"> <button class="btn btn-success play"><i class="fa fa-play"></i> Play</button></div>
+            <div class="col-6 mute-div"> <button class="btn btn-warning mute"><i class="fa fa-volume-off"></i> Mute</button></div>
+            <div class="col-6 unmute-div"> <button class="btn btn-warning unmute"><i class="fa fa-volume-up"></i> Unmute</button></div>
          </div>
       </div>
 
@@ -484,6 +482,14 @@
          var hlsInstance = null;
          var loadTimer = null;
 
+         function enablePlayerLighting() {
+            $('.footer-static-container').addClass('playing-lighting');
+         }
+
+         function disablePlayerLighting() {
+            $('.footer-static-container').removeClass('playing-lighting');
+         }
+
          // Initialize Video.js engine once
          try {
             videoPlayer = videojs('my_video_1', {
@@ -506,15 +512,9 @@
             $('.loading').stop(true, true).fadeOut(200);
          }
 
-         function setActiveChannelEffect(element) {
-            $('.fm-container, .fm-container-air').removeClass('playing-light-effect');
-            if (element) {
-               $(element).addClass('playing-light-effect');
-            }
-         }
-
          // Stop both audio players cleanly
          function stopAllPlayback() {
+            disablePlayerLighting();
             if (hlsInstance) {
                hlsInstance.destroy();
                hlsInstance = null;
@@ -540,9 +540,9 @@
                hlsInstance.attachMedia(videoElement || audio);
                hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
                   if (videoElement && videoElement.play) {
-                     videoElement.play().then(hideLoading).catch(function() { hideLoading(); });
+                     videoElement.play().then(function(){ hideLoading(); enablePlayerLighting(); }).catch(function() { hideLoading(); });
                   } else {
-                     audio.play().then(hideLoading).catch(function() { hideLoading(); });
+                     audio.play().then(function(){ hideLoading(); enablePlayerLighting(); }).catch(function() { hideLoading(); });
                   }
                });
                hlsInstance.on(Hls.Events.ERROR, function() {
@@ -555,6 +555,7 @@
                   if (playPromise !== undefined) {
                      playPromise.then(function() {
                         hideLoading();
+                        enablePlayerLighting();
                      }).catch(function(err) {
                         console.log("VideoJS Playback error:", err);
                         hideLoading();
@@ -563,7 +564,7 @@
                });
             } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
                audio.src = link;
-               audio.play().then(hideLoading).catch(function() { hideLoading(); });
+               audio.play().then(function(){ hideLoading(); enablePlayerLighting(); }).catch(function() { hideLoading(); });
             } else {
                hideLoading();
             }
@@ -574,8 +575,6 @@
             e.preventDefault();
             stopAllPlayback();
             currentType = "video";
-
-            setActiveChannelEffect(this);
 
             $('.play-div').hide(); $('.pause-div').show();
             $('.unmute-div').hide(); $('.mute-div').show();
@@ -597,15 +596,13 @@
             stopAllPlayback();
             currentType = "audio";
 
-            setActiveChannelEffect(this);
-
             $('.play-div').hide(); $('.pause-div').show();
             $("#player").prop('muted', false);
             $('.unmute-div').hide(); $('.mute-div').show();
             showLoading();
 
             var title = $(this).attr('data-title');
-            var rawLink = $(this).attr('data-link');
+            var rawLink = rawLink = $(this).attr('data-link');
             $('.fm-name').text(title);
 
             // Secure HTTP to HTTPS when needed for browser compliance
@@ -622,6 +619,7 @@
                if (playPromise !== undefined) {
                   playPromise.then(function() {
                      hideLoading();
+                     enablePlayerLighting();
                   }).catch(function(error) {
                      console.log("Audio Playback error:", error);
                      hideLoading();
@@ -631,17 +629,20 @@
          });
 
          // Hide loader when audio starts playing
-         $("#player").on('playing waiting error', function(e){
+         $("#player").on('playing waiting error pause', function(e){
             if (e.type === 'playing') {
                hideLoading();
-            } else if (e.type === 'error') {
+               enablePlayerLighting();
+            } else if (e.type === 'pause' || e.type === 'error') {
                hideLoading();
+               disablePlayerLighting();
             }
          });
 
          if (videoPlayer) {
-            videoPlayer.on('playing', function() { hideLoading(); });
-            videoPlayer.on('error', function() { hideLoading(); });
+            videoPlayer.on('playing', function() { hideLoading(); enablePlayerLighting(); });
+            videoPlayer.on('pause', function() { disablePlayerLighting(); });
+            videoPlayer.on('error', function() { hideLoading(); disablePlayerLighting(); });
          }
 
          // --- PLAYER ACTION CONTROLS ---
@@ -651,6 +652,7 @@
             } else if (videoPlayer) {
                videoPlayer.pause();
             } 
+            disablePlayerLighting();
             $('.pause-div').hide(); $('.play-div').show();
          });
 
@@ -660,6 +662,7 @@
             } else if (videoPlayer) {
                videoPlayer.play();
             } 
+            enablePlayerLighting();
             $('.play-div').hide(); $('.pause-div').show();
          });
 
